@@ -3,7 +3,9 @@ var projectController = require('../controller/controller');
 
 var router = express.Router();
 
-router.get('/get1', projectController.get1);
-router.get('/get2', projectController.get2);
+router.post('/addCase', projectController.addCase);
+// router.get('/getStadistics', projectController.getStadistics);
+router.get('/getInfo', projectController.getInfo);
+router.post('/changeInfo', projectController.changeInfo);
 
 module.exports = router;
