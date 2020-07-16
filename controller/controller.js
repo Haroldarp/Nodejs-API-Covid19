@@ -62,7 +62,29 @@ var controller = {
         });
     },
 
-    addAdmin: function(req, res){
+    addAdmin: async function(req, res){
+        var admin = {
+            Nombre: req.body.Nombre,
+            Apellido: req.body.Apellido,
+            Telefono: req.body.Telefono,
+            Cedula: req.body.Cedula,
+            FechaNacimiento: new Date(req.body.FechaNacimiento),
+            TipoAdmin: req.body.TipoAdmin,
+        };
+
+        try {
+            var result = await firebase.auth.createUserWithEmailAndPassword(req.body.Usuario, req.body.Password);
+            firebase.db.collection('Admin').doc(result.user.uid).set({admin});
+            return res.status(200).send({
+                ok: true
+            });
+            
+        } catch (error) {
+            return res.status(200).send({
+                        ok: false,
+                        mesage: error
+                    });
+        }
 
     },
 
