@@ -22,3 +22,5 @@ var firebaseConfig = {
 auth.initializeApp(firebaseConfig);
 
 module.exports.auth = auth.auth();
+
+module.exports.firestore = admin.firestore;

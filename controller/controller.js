@@ -2,19 +2,19 @@ var firebase = require('../firebase');
 
 var controller = {
 
-    addCase: function(req, res){
+    addCase: async function(req, res){
 
         var data = {
             Nombre : req.body.Nombre,
             Sexo: req.body.Sexo,
             Provincia: req.body.Provincia,
-            Sector: req.body.Sector,
+            Municipio: req.body.Municipio,
             Edad: req.body.Edad,
             Cedula: req.body.Cedula,
             Telefono: req.body.Telefono,
             CantidadVivencia: req.body.CantidadVivencia,
             FechaReporte: new Date(),
-            FechaInicioSintoma: req.body.FechaInicioSintoma,
+            FechaInicioSintoma: new Date(req.body.FechaInicioSintoma),
             Problemas: {
                 Cardiovascular: req.body.Problemas.Cardiovascular,
                 Diabetes: req.body.Problemas.Diabetes,
@@ -28,38 +28,41 @@ var controller = {
             }
         };
 
-        firebase.db.collection('Persona').doc().set(
-            data
-        ).then(()=>{
+        try {
+            const batch = firebase.db.batch();
+            const increment = firebase.firestore.FieldValue.increment(1);
+
+            var personaRef = await firebase.db.collection('Persona').doc();
+            var provinciaRef = await firebase.db.collection('Estadisticas').doc('Provincias');
+            var municipioRef = await firebase.db.collection('Estadisticas').doc('Municipios');
+            var sexoRef = await firebase.db.collection('Estadisticas').doc('Sexo');
+            var totalRef = await firebase.db.collection('Estadisticas').doc('Total');
+
+            batch.set(personaRef , data);
+            batch.set(provinciaRef , {[data.Provincia]: increment}, {merge: true});
+            batch.set(municipioRef , {[data.Municipio]: increment}, {merge: true});
+            batch.set(sexoRef , {[data.Sexo]: increment}, {merge: true});
+            batch.set(totalRef , {Counter: increment}, {merge: true});
+            await batch.commit();
+
             return res.status(200).send({
                 ok: true
             });
-        }).catch((err)=>{
+            
+        } catch (error) {
             return res.status(200).send({
                 ok:false, 
-                mesage: err
+                mesage: error
             });
-        });
+            
+        }
+
+
     },
 
     getStadistics: function(req, res){
 
-        var docs = [];
-
-        firebase.db.collection('Persona').get()
-        .then((allDocs)=>{
-
-            allDocs.forEach((doc) =>{
-                docs.push(doc.data()['Sector']);
-            });
-
-            return res.status(200).json(docs);
-
-        }).catch((err)=>{
-            return res.status(200).send({
-                mesage: err
-            });
-        });
+       
     },
 
     addAdmin: async function(req, res){
