@@ -126,6 +126,7 @@ var controller = {
             var provincias = await firebase.db.collection('Estadisticas').doc('Provincias').get();
             var municipios = await firebase.db.collection('Estadisticas').doc('Municipios').get()
             var edades = await firebase.db.collection('Estadisticas').doc('Edad').get();
+            var sexo2 = await firebase.db.collection('Estadisticas').doc('Sexo').get();
             var sexo;
 
             //sexo vs timpo
@@ -212,7 +213,8 @@ var controller = {
                 provinciasTop: provinciasTop,
                 municipiosTop: municipiosTop,
                 edades: edades.data(),
-                sexoVsTiempo: sexoVsTiempo
+                sexoVsTiempo: sexoVsTiempo,
+                sexo: sexo2
             });
 
         } catch (error) {
