@@ -214,7 +214,7 @@ var controller = {
                 municipiosTop: municipiosTop,
                 edades: edades.data(),
                 sexoVsTiempo: sexoVsTiempo,
-                sexo: sexo2
+                sexo: sexo2.data()
             });
 
         } catch (error) {
